@@ -175,7 +175,8 @@
           <col width="20%" />
           <col width="20%" />
           <col width="20%" />
-          <col width="20%" />
+          <col width="10%" />
+          <col width="10%" />
         </colgroup>
 
         <thead>
@@ -185,19 +186,28 @@
             <th scope="col">상위 Menu ID</th>
             <th scope="col">상위 Menu 명</th>
             <th scope="col">사용 유무</th>
+            <th scope="col">권한</th>
           </tr>
         </thead>
         <tbody>
               <tr v-if="sublist.totalcnt === 0">
-                 <td colspan="5">조회된 데이터가 없습니다.</td>
+                 <td colspan="6">조회된 데이터가 없습니다.</td>
               </tr>   
               <template v-else>
-                <tr v-for="(item, index) in sublist.listdata" :key="index" @click="submenumodify(item.mnu_id)">
+                <tr v-for="(item, index) in sublist.listdata" :key="index" >
                    <td>{{item.mnu_id}}</td>
-                   <td>{{item.mnu_nm}}</td>
+                   <td @click="submenumodify(item.mnu_id)">{{item.mnu_nm}}</td>
                    <td>{{item.hir_mnu_id}}</td>
                    <td>{{item.hir_mnu_nm}}</td>
                    <td>{{item.use_poa}}</td>
+                   <td><a
+                    class="btn btn-primary mx-2"
+                    id="searchGrpcod"
+                    name="btnSearch"
+                    @click="privi(item.mnu_id, item.hir_mnu_nm)"
+                  >
+                    <span>권한</span>
+                  </a></td>
                 </tr>   
               </template>
         </tbody>
@@ -229,6 +239,7 @@
    import { openModal } from "jenesius-vue-modal";
    import Samplepagepopypmain from "./Samplepagepopypmain.vue" 
    import Samplepagepopypsub from "./Samplepagepopypsub.vue"
+   import Samplepagepopyupri from "./Samplepagepopyupri.vue"
 
    let searcharea = ref({
          smenuid : "",
@@ -398,6 +409,33 @@
       }
     };    
   }
+
+  const privi = async (submenuid, submenunm) => { 
+
+    popupparam = {
+       mainmenuid : subsearcharea.value.smenuid,
+       menunm  : subsearcharea.value.smenunm,
+       submenuid : submenuid,
+       submenunm  : submenunm
+    }
+
+    const popupvar = await openModal(Samplepagepopyupri, popupparam);
+
+    popupvar.onclose = () => {
+      /*
+      if (subpopupsaveyn.value === "Y") {
+        subsearcharea.value.currentpage = 1;
+        submenusearch(subsearcharea.value.smenuid);
+      }
+        */
+    };
+
+    
+    
+
+  }
+
+
 
    onMounted(() => {
        mainsearch();
